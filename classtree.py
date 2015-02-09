@@ -1,6 +1,6 @@
 # a tree structure group of classitems 
 from classitem import ClassItem 
-
+import json
 class ClassTree(object):
 	"""docstring for ClassTree"""
 	def __init__(self, root=None):
@@ -16,11 +16,25 @@ class ClassTree(object):
 				return result
 		return None
 
-	def toXML(self):
-		pass
+	def toJSONString(self):
+		return json.dumps(self.root.toJSONObject(),indent=4,separators=(',',':'))
 
-	def loadFromXML(self):
-		pass
+	def fromJSONString(self,jsonstr):
+		jsonObject = json.loads(jsonstr)
+		self.root = _loadJSONObject(jsonObject)
+		return self.root
+
+def _loadJSONObject(jsonDict):
+	obj = ClassItem(jsonDict['id'],jsonDict['name'],jsonDict['description'])
+	if jsonDict['location']:
+		obj.setLocation(*jsonDict['location'])
+	for child in jsonDict['children']:
+		childitem = _loadJSONObject(child)
+		childitem.setParent(obj)
+		obj.addChildItem(childitem)
+	return obj 
+
+	
 
 	
 

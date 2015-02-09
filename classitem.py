@@ -2,7 +2,7 @@
 # public member: name, description
 class ClassItem(object):
 	"""docstring for ClassItem"""
-	def __init__(self, id, name=None, description=None, parent=None):
+	def __init__(self, id, name, description=None, parent=None):
 		super(ClassItem, self).__init__()
 		self._parent = parent
 		self._id = id
@@ -40,13 +40,14 @@ class ClassItem(object):
 	def childrenLength(self):
 		return len(self._children)
 
-	def addChild(self,otherItem):
+	def addChildItem(self,otherItem):
 		if isinstance(otherItem,ClassItem):
 			self._children.append(otherItem)
+			otherItem.setParent(self)
 			return True
 		return False
 
-	def addChild(self, id, name=None, description=None):
+	def addChild(self, id, name, description=None):
 		child = ClassItem(id,name,description,self)
 		self._children.append(child)
 		return child
@@ -74,6 +75,22 @@ class ClassItem(object):
 				return True
 		return False
 
+	def depth(self):
+		maxDepth = 0
+		for child in self._children:
+			tempdepth = child.depth()
+			maxDepth = tempdepth if tempdepth>maxDepth else maxDepth
+		return maxDepth+1
+
+	def toJSONObject(self):
+		childrenObjs = []
+		for child in self._children:
+			childrenObjs.append(child.toJSONObject())
+		return {'id':self._id,
+				'name':self.name,
+				'description':self.description,
+				'location':self.location,
+				'children':childrenObjs}
 
 	def __str__(self):
 		return "%-5s%s" % (self._id,self.name)
