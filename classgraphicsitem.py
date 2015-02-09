@@ -51,7 +51,7 @@ class ClassGraphicsItem(QGraphicsItem):
 		# self.model.addChild(modeldata)
 		child=ClassGraphicsItem(modeldata,parent=self)
 
-		child.setPos(self.x()+self.offset,self.y()+self.offset)
+		child.setPos(self.x()+self._offset,self.y()+self._offset)
 		self._offset+=OFFSET
 
 		self.setGeometry()
@@ -75,7 +75,7 @@ class ClassGraphicsItem(QGraphicsItem):
 	def itemChange(self,change,value):
 		if change == QGraphicsItem.ItemPositionHasChanged:
 			self.model.setLocation([self.x(),self.y()],[self.scenePos().x(),self.scenePos().y()])
-		super(ClassGraphicsItem,self).itemChange(change,value)
+		return super(ClassGraphicsItem,self).itemChange(change,value)
 
 
 

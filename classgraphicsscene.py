@@ -1,6 +1,6 @@
 from PyQt4.QtGui import QGraphicsScene
 from PyQt4.QtCore import SIGNAL
-from classgraphics import ClassGraphicsItem
+from classgraphicsitem import ClassGraphicsItem
 from classpropertiesdlg import ClassPropertiesDlg 
 OFFSET = 10
 class ClassGraphicsScene(QGraphicsScene):
@@ -15,12 +15,12 @@ class ClassGraphicsScene(QGraphicsScene):
 		self.clear()
 		if self.datatree.root:
 			for topclass in self.datatree.root.childIter():
-				self.addItem(ClassGraphicsItem(topclass))
+				self.addNewTopClass(topclass)
 
 	def addNewTopClass(self,model):
-		graphicsitem = ClassGraphicsItem(model)
-		self.addItem(graphicsitem)
-		graphicsitem.setPos(self.offset,self.offset)
+		newgraphicsitem = ClassGraphicsItem(model)
+		self.addItem(newgraphicsitem)
+		newgraphicsitem.setPos(self.offset,self.offset)
 		self.offset+=OFFSET
 		# if self.views():
 		# 	self.views()[0].centerOn(graphicsitem)
@@ -40,6 +40,7 @@ class ClassGraphicsScene(QGraphicsScene):
 		else:
 			model = self.datatree.root.addChild(cid,name,description)
 			self.addNewTopClass(model)
+		# self.listClasses()
 		return True
 
 	def removeClass(self):
@@ -50,6 +51,11 @@ class ClassGraphicsScene(QGraphicsScene):
 			self.removeItem(currentItems[0])
 		else:
 			self.emit(SIGNAL("StatusMessage(QString)"),'Select a targt class first.')
+
+	def listClasses(self):
+		print "-classes:"
+		for classitem in self.items():
+			print classitem.model.id()
 
 
 
